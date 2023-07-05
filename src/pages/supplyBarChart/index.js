@@ -14,12 +14,26 @@ const SupplyBarChart = () => {
     queryFn: GetPowerSourcesData,
     refetchInterval: 10000
   }) 
-
+  console.log("Time1 ---->   ", +new Date());
   if(powerSources.status === "loading") return <h1>Loading...</h1>
   if(powerSources.status === "error") return <h1>{JSON.stringify(powerSources.error)}</h1>
 
+  let mainData = {};
   for (let i = 0; i<powerSources.data.data.length; i++ ){
-    !categories.includes(powerSources.data.data[i].date) && categories.push(powerSources.data.data[i].date);
+    if (i===0){
+      const firstDate = powerSources.data.data[i].date;
+      mainData[firstDate] = [powerSources.data.data[i]];
+    }
+    else{
+      if(powerSources.data.data[i].date !== powerSources.data.data[i-1].date){
+        const secondDate = powerSources.data.data[i].date;
+        mainData[secondDate] = [powerSources.data.data[i]];
+      }else{
+        const thirdDate = powerSources.data.data[i].date;
+        mainData[thirdDate].push(powerSources.data.data[i]);
+      }
+    }
+    // !categories.includes(powerSources.data.data[i].date) && categories.push(powerSources.data.data[i].date);
   }
 
   const types = [
@@ -38,27 +52,51 @@ const SupplyBarChart = () => {
     { name: "Undetermined", color: "#BBE3FD" },
     { name: "", color: "#FFFFFF" },
   ];
-
-  categories.forEach(function (category, index) {
-    for (let i = 0; i<powerSources.data.data.length; i++) {
-      const beforeTime = timeToMiliSeconds(powerSources.data.data[i]["minute_window"].split(' ')[1].split('+')[0]);
-      if (category === powerSources.data.data[i].date) {
-        const typeItem = types.find(
-          (item) => item.name === powerSources.data.data[i].sourceTag
-        );
-        const duration = 300000;
-        const afterTime = beforeTime + duration;
-        data.push({
-          name: typeItem.name,
-          value: [index, beforeTime , afterTime, powerSources.data.data[i]["minute_window"].split('+')[0]],
-          itemStyle: {
-            color: typeItem.color,
-          },
-        });
-      }
-    }
-  });
   
+  Object.keys(mainData).forEach((key, index) => {
+    mainData[key].forEach((source) => {
+      const beforeTime = timeToMiliSeconds(
+        source["minute_window"].split(" ")[1].split("+")[0]
+      );
+      const typeItem = types.find(
+        (item) => item.name === source.sourceTag
+      );
+      const duration = 300000;
+      const afterTime = beforeTime + duration;
+      data.push({
+        name: typeItem.name,
+        value: [
+          index,
+          beforeTime,
+          afterTime,
+          source["minute_window"].split("+")[0],
+        ],
+        itemStyle: {
+          color: typeItem.color,
+        },
+      });
+    });
+  });
+  // categories.forEach(function (category, index) {
+  //   for (let i = 0; i<powerSources.data.data.length; i++) {
+      // const beforeTime = timeToMiliSeconds(powerSources.data.data[i]["minute_window"].split(' ')[1].split('+')[0]);
+      // if (category === powerSources.data.data[i].date) {
+      //   const typeItem = types.find(
+      //     (item) => item.name === powerSources.data.data[i].sourceTag
+      //   );
+      //   const duration = 300000;
+      //   const afterTime = beforeTime + duration;
+      //   data.push({
+      //     name: typeItem.name,
+      //     value: [index, beforeTime , afterTime, powerSources.data.data[i]["minute_window"].split('+')[0]],
+      //     itemStyle: {
+      //       color: typeItem.color,
+      //     },
+      //   });
+      // }
+  //   }
+  // });
+  console.log("Time2 ---->   ", +new Date());
   
   function renderItem(params, api) {
     const categoryIndex = api.value(0);
@@ -120,7 +158,7 @@ const SupplyBarChart = () => {
       scale: true,
       axisLabel: {
         formatter: function (val) {
-          if(val<timeToMiliSeconds("23:55:00")){
+          if(val<=timeToMiliSeconds("23:55:00")){
             return miliSecondsToTime(val);
           }
         },
@@ -128,7 +166,7 @@ const SupplyBarChart = () => {
     },
     yAxis: {
       name: "Date",
-      data: categories,
+      data: Object.keys(mainData),
     },
     series: [
       {
@@ -147,8 +185,8 @@ const SupplyBarChart = () => {
   };
 
   return <>
-  <ReactECharts option={option} style={{ height: 500 }} />;
-  {console.log(powerSources.data.data)};
+  <ReactECharts option={option} style={{ height: 500 }} />
+  {console.log(powerSources.data.data)}
   </>
 };
 
