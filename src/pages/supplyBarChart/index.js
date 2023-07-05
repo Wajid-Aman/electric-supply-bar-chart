@@ -36,7 +36,6 @@ const SupplyBarChart = () => {
         const typeItem = types.find(
           (item) => item.name === JSONdata[i].sourceTag
         );
-        console.log(miliSecondsToTime(300000))
         const duration = 300000;
         const afterTime = beforeTime + duration;
         data.push({
@@ -49,6 +48,7 @@ const SupplyBarChart = () => {
       }
     }
   });
+  
   function renderItem(params, api) {
     const categoryIndex = api.value(0);
     const start = api.coord([api.value(1), categoryIndex]);
@@ -73,7 +73,9 @@ const SupplyBarChart = () => {
         type: "rect",
         transition: ["shape"],
         shape: rectShape,
-        style: api.style(),
+        style: {
+          fill: api.visual('color')
+        }
       }
     );
   }
