@@ -1,15 +1,25 @@
 import React from "react";
-import JSONdata from "../../data.json";
 import ReactECharts from "echarts-for-react";
 import * as echarts from "echarts";
+import { useQuery } from "@tanstack/react-query";
+import { GetPowerSourcesData } from "./fetchData";
 import { miliSecondsToTime, timeToMiliSeconds } from "../../helpers";
 
 const SupplyBarChart = () => {
   let data = [];
   let categories = []
+  
+  const powerSources = useQuery({
+    queryKey: ["powerSources"],
+    queryFn: GetPowerSourcesData,
+    refetchInterval: 10000
+  }) 
 
-  for (let i = 0; i<JSONdata.length; i++ ){
-    !categories.includes(JSONdata[i].date) && categories.push(JSONdata[i].date);
+  if(powerSources.status === "loading") return <h1>Loading...</h1>
+  if(powerSources.status === "error") return <h1>{JSON.stringify(powerSources.error)}</h1>
+
+  for (let i = 0; i<powerSources.data.data.length; i++ ){
+    !categories.includes(powerSources.data.data[i].date) && categories.push(powerSources.data.data[i].date);
   }
 
   const types = [
@@ -30,17 +40,17 @@ const SupplyBarChart = () => {
   ];
 
   categories.forEach(function (category, index) {
-    for (let i = 0; i < JSONdata.length; i++) {
-      const beforeTime = timeToMiliSeconds(JSONdata[i]["minute-window"].split(' ')[1].split('+')[0]);
-      if (category === JSONdata[i].date) {
+    for (let i = 0; i<powerSources.data.data.length; i++) {
+      const beforeTime = timeToMiliSeconds(powerSources.data.data[i]["minute_window"].split(' ')[1].split('+')[0]);
+      if (category === powerSources.data.data[i].date) {
         const typeItem = types.find(
-          (item) => item.name === JSONdata[i].sourceTag
+          (item) => item.name === powerSources.data.data[i].sourceTag
         );
         const duration = 300000;
         const afterTime = beforeTime + duration;
         data.push({
           name: typeItem.name,
-          value: [index, beforeTime , afterTime, JSONdata[i]["minute-window"].split('+')[0]],
+          value: [index, beforeTime , afterTime, powerSources.data.data[i]["minute_window"].split('+')[0]],
           itemStyle: {
             color: typeItem.color,
           },
@@ -48,6 +58,7 @@ const SupplyBarChart = () => {
       }
     }
   });
+  
   
   function renderItem(params, api) {
     const categoryIndex = api.value(0);
@@ -109,7 +120,9 @@ const SupplyBarChart = () => {
       scale: true,
       axisLabel: {
         formatter: function (val) {
-          return miliSecondsToTime(val);
+          if(val<timeToMiliSeconds("23:55:00")){
+            return miliSecondsToTime(val);
+          }
         },
       },
     },
@@ -133,7 +146,10 @@ const SupplyBarChart = () => {
     ],
   };
 
-  return <ReactECharts option={option} style={{ height: 500 }} />;
+  return <>
+  <ReactECharts option={option} style={{ height: 500 }} />;
+  {console.log(powerSources.data.data)};
+  </>
 };
 
 export default SupplyBarChart;

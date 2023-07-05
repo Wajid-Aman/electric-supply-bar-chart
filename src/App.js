@@ -1,5 +1,5 @@
-import SupplyBarChart from './pages/supplyBarChart';
 import './App.css';
+import SupplyBarChart from './pages/supplyBarChart';
 
 function App() {
   return (
