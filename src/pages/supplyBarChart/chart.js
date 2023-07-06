@@ -40,78 +40,71 @@ const Chart = ({powerSources}) => {
   ];
   
   Object.keys(mainData).forEach((key, index) => {
-    // console.log("converted Time",mainData[key][0]["minute_window"].split(" ")[1].split("+")[0]);
-    let baseTime = timeToMiliSeconds("00:00:00");
-    let tempIndex = 0;
-    for(let i = 0; i < 288; i++ ){
-      console.log("baseTime initial",baseTime);   
-        console.log("internal if",mainData[key][tempIndex]);
-       // console.log("mainData[key][i]",timeToMiliSeconds(mainData[key][i])["minute_window"].split(" ")[1].split("+")[0]);
-       console.log(baseTime ===
-        timeToMiliSeconds(
-          mainData[key][tempIndex]["minute_window"].split(" ")[1].split("+")[0]
-        )) 
-       if (
-          baseTime ===
-          timeToMiliSeconds(
-            mainData[key][tempIndex]["minute_window"].split(" ")[1].split("+")[0]
-          )
+    let mainDataindex = 0;
+    let beforeTime = 0;
+    const duration = 300000;
+    for (let i = 0; i < 288; i++) {
+      let source = mainData[key][mainDataindex];
+      if (source) {
+        if (
+          beforeTime ===
+          timeToMiliSeconds(source["minute_window"].split(" ")[1].split("+")[0])
         ) {
-          const typeItem = types.find(
-            (item) => item.name === mainData[key][tempIndex].sourceTag
-          );
-          const duration = 300000;
-          const afterTime = baseTime + duration;
+          const typeItem = types.find((item) => item.name === source.sourceTag);
+          const afterTime = beforeTime + duration;
           data.push({
             name: typeItem.name,
             value: [
               index,
-              baseTime,
+              beforeTime,
               afterTime,
-              mainData[key][tempIndex]["minute_window"].split("+")[0],
+              source["minute_window"].split("+")[0],
             ],
             itemStyle: {
               color: typeItem.color,
             },
           });
-          baseTime = baseTime + duration;
+          mainDataindex++;
         } else {
-          const duration = 300000;
-          const afterTime = baseTime + duration;
+          const typeItem = types.find((item) => item.name === "");
+          const afterTime = beforeTime + duration;
           data.push({
-            name: "No Source Data",
-            value: [index, baseTime, afterTime, baseTime],
+            name: typeItem.name,
+            value: [
+              index,
+              beforeTime,
+              afterTime,
+              `${key} ${miliSecondsToTime(beforeTime)}`,
+            ],
             itemStyle: {
-              color: "#FFFFFF",
+              color: typeItem.color,
             },
           });
-          baseTime = baseTime + duration;
         }
-      tempIndex = tempIndex + 1;
+      } else {
+        if (
+          mainData[key][mainDataindex-1] >=
+          powerSources.data.data[powerSources.data.data.length - 1]["minute_window"]
+        ) {
+          break;
+        }
+        const typeItem = types.find((item) => item.name === "");
+        const afterTime = beforeTime + duration;
+        data.push({
+          name: typeItem.name,
+          value: [
+            index,
+            beforeTime,
+            afterTime,
+            `${key} ${miliSecondsToTime(beforeTime)}`,
+          ],
+          itemStyle: {
+            color: typeItem.color,
+          },
+        });
+      }
+      beforeTime += duration;
     }
-
-    // mainData[key].forEach((source) => {
-    //   const beforeTime = timeToMiliSeconds(
-    //     source["minute_window"].split(" ")[1].split("+")[0]
-    //   );
-    //   const typeItem = types.find(
-    //     (item) => item.name === source.sourceTag
-    //   );
-    //   const duration = 300000;
-    //   const afterTime = beforeTime + duration;
-    //   data.push({
-    //     name: typeItem.name,
-    //     value: [
-    //       index,
-    //       beforeTime,
-    //       afterTime,
-    //       source["minute_window"].split("+")[0],
-    //     ],
-    //     itemStyle: {
-    //       color: typeItem.color,
-    //     },
-    //   });
-    // });
   });
   
   function renderItem(params, api) {
