@@ -1,7 +1,7 @@
 import React from "react";
+import Chart from "./chart";
 import { useQuery } from "@tanstack/react-query";
 import { GetPowerSourcesData } from "./fetchData";
-import Chart from "./chart";
 
 const PowerSourcesChart = () => {
   const powerSources = useQuery({

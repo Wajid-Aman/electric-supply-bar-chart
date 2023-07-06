@@ -45,28 +45,78 @@ const Chart = ({powerSources}) => {
   ];
   
   Object.keys(mainData).forEach((key, index) => {
-    mainData[key].forEach((source) => {
-      const beforeTime = timeToMiliSeconds(
-        source["minute_window"].split(" ")[1].split("+")[0]
-      );
-      const typeItem = types.find(
-        (item) => item.name === source.sourceTag
-      );
-      const duration = 300000;
-      const afterTime = beforeTime + duration;
-      data.push({
-        name: typeItem.name,
-        value: [
-          index,
-          beforeTime,
-          afterTime,
-          source["minute_window"].split("+")[0],
-        ],
-        itemStyle: {
-          color: typeItem.color,
-        },
-      });
-    });
+    // console.log("converted Time",mainData[key][0]["minute_window"].split(" ")[1].split("+")[0]);
+    let baseTime = timeToMiliSeconds("00:00:00");
+    let tempIndex = 0;
+    for(let i = 0; i < 288; i++ ){
+      console.log("baseTime initial",baseTime);   
+        console.log("internal if",mainData[key][tempIndex]);
+       // console.log("mainData[key][i]",timeToMiliSeconds(mainData[key][i])["minute_window"].split(" ")[1].split("+")[0]);
+       console.log(baseTime ===
+        timeToMiliSeconds(
+          mainData[key][tempIndex]["minute_window"].split(" ")[1].split("+")[0]
+        )) 
+       if (
+          baseTime ===
+          timeToMiliSeconds(
+            mainData[key][tempIndex]["minute_window"].split(" ")[1].split("+")[0]
+          )
+        ) {
+          const typeItem = types.find(
+            (item) => item.name === mainData[key][tempIndex].sourceTag
+          );
+          const duration = 300000;
+          const afterTime = baseTime + duration;
+          data.push({
+            name: typeItem.name,
+            value: [
+              index,
+              baseTime,
+              afterTime,
+              mainData[key][tempIndex]["minute_window"].split("+")[0],
+            ],
+            itemStyle: {
+              color: typeItem.color,
+            },
+          });
+          baseTime = baseTime + duration;
+        } else {
+          const duration = 300000;
+          const afterTime = baseTime + duration;
+          data.push({
+            name: "No Source Data",
+            value: [index, baseTime, afterTime, baseTime],
+            itemStyle: {
+              color: "#FFFFFF",
+            },
+          });
+          baseTime = baseTime + duration;
+        }
+      tempIndex = tempIndex + 1;
+    }
+
+    // mainData[key].forEach((source) => {
+    //   const beforeTime = timeToMiliSeconds(
+    //     source["minute_window"].split(" ")[1].split("+")[0]
+    //   );
+    //   const typeItem = types.find(
+    //     (item) => item.name === source.sourceTag
+    //   );
+    //   const duration = 300000;
+    //   const afterTime = beforeTime + duration;
+    //   data.push({
+    //     name: typeItem.name,
+    //     value: [
+    //       index,
+    //       beforeTime,
+    //       afterTime,
+    //       source["minute_window"].split("+")[0],
+    //     ],
+    //     itemStyle: {
+    //       color: typeItem.color,
+    //     },
+    //   });
+    // });
   });
   // categories.forEach(function (category, index) {
   //   for (let i = 0; i<powerSources.data.data.length; i++) {
