@@ -122,6 +122,7 @@ const Chart = ({powerSources}) => {
     },
     xAxis: {
       scale: true,
+      max: timeToMiliSeconds("23:55:00"),
       axisLabel: {
         formatter: function (val) {
           if(val<=timeToMiliSeconds("23:55:00")){
