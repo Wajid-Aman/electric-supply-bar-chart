@@ -1,70 +1,37 @@
-# Getting Started with Create React App
+# Chart of Power Sources Connected to Electric Power Supply at every 5-minute interval.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Build Instructions
+1- 'npm i' ---> to install Dependencies
 
-## Available Scripts
+2- 'npm start' ---> Runs the app in the development mode
 
-In the project directory, you can run:
+3- Open 'http =//localhost =3000' to view it in your browser
 
-### `npm start`
+## View Instruction
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Color Scheme for each Power Source is given below
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+    Name = Main, Color Code = "#B798F5"
+    Name = "Solar", Color Code = "#02E10C"  
+    Name = "DG", Color Code = "#403F3D"  
+    Name = "Battery", Color Code = "#FDE602"  
+    Name = "Solar+Battery", Color Code = "#86B0FF"  
+    Name = "Battery+Solar", Color Code = "#86B0FF"  
+    Name = "Main+Solar", Color Code = "#7243D0"  
+    Name = "Main+Battery", Color Code = "#32864B"  
+    Name = "Main+Solar+Battery", Color Code = "#8BC486"  
+    Name = "DG+Battery", Color Code = "#FF00FF"  
+    Name = "DG+Solar+Battery", Color Code = "#00FFFF"  
+    Name = "DG+Battery+Solar", Color Code = "#00FFFF"  
+    Name = "Undetermined", Color Code = "#BBE3FD" 
 
-### `npm test`
+Empty white spaces in the chart show the unavailability of data at that interval due to network unavailability, site outage, etc.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Axis
+  x-axis: time intervals in hh:mm:ss
+  y-axis: date in yyyy-mm-dd
 
-### `npm run build`
+### Refreshing data 
+  In order to check that the data is refreshing after some time interval click on the flower icon at the bottom left side of the screen to open query dev tools.
+  Currently, the Refresh Time is 10 sec to reduce the testing time. In order to change that navigate to src/pages/supplyBarChart/index.js line:10 refetchInterval: 10000, and Enter 300000 for 5 minutes.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
