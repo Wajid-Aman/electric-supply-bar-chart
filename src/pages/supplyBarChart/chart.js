@@ -5,10 +5,6 @@ import { miliSecondsToTime, timeToMiliSeconds } from "../../helpers";
 
 const Chart = ({powerSources}) => {
   let data = [];
-  // let categories = []
-
-  console.log("Time1 ---->   ", +new Date());
-
   let mainData = {};
   for (let i = 0; i<powerSources.data.data.length; i++ ){
     if (i===0){
@@ -24,7 +20,6 @@ const Chart = ({powerSources}) => {
         mainData[thirdDate].push(powerSources.data.data[i]);
       }
     }
-    // !categories.includes(powerSources.data.data[i].date) && categories.push(powerSources.data.data[i].date);
   }
 
   const types = [
@@ -118,26 +113,6 @@ const Chart = ({powerSources}) => {
     //   });
     // });
   });
-  // categories.forEach(function (category, index) {
-  //   for (let i = 0; i<powerSources.data.data.length; i++) {
-      // const beforeTime = timeToMiliSeconds(powerSources.data.data[i]["minute_window"].split(' ')[1].split('+')[0]);
-      // if (category === powerSources.data.data[i].date) {
-      //   const typeItem = types.find(
-      //     (item) => item.name === powerSources.data.data[i].sourceTag
-      //   );
-      //   const duration = 300000;
-      //   const afterTime = beforeTime + duration;
-      //   data.push({
-      //     name: typeItem.name,
-      //     value: [index, beforeTime , afterTime, powerSources.data.data[i]["minute_window"].split('+')[0]],
-      //     itemStyle: {
-      //       color: typeItem.color,
-      //     },
-      //   });
-      // }
-  //   }
-  // });
-  console.log("Time2 ---->   ", +new Date());
   
   function renderItem(params, api) {
     const categoryIndex = api.value(0);
@@ -181,22 +156,32 @@ const Chart = ({powerSources}) => {
     },
     dataZoom: [
       {
-        type: "slider",
-        filterMode: "weakFilter",
-        showDataShadow: false,
-        top: 400,
-        labelFormatter: "",
+        type: 'slider',
+        xAxisIndex: 0,
+        filterMode: 'none'
       },
       {
-        type: "inside",
-        filterMode: "weakFilter",
+        type: 'slider',
+        yAxisIndex: 0,
+        filterMode: 'none'
       },
+      {
+        type: 'inside',
+        xAxisIndex: 0,
+        filterMode: 'none'
+      },
+      {
+        type: 'inside',
+        yAxisIndex: 0,
+        filterMode: 'none'
+      }
     ],
     grid: {
       height: 300,
     },
     xAxis: {
       scale: true,
+      max: timeToMiliSeconds("23:55:00"),
       axisLabel: {
         formatter: function (val) {
           if(val<=timeToMiliSeconds("23:55:00")){
@@ -225,10 +210,7 @@ const Chart = ({powerSources}) => {
     ],
   };
 
-  return <>
-  <ReactECharts option={option} style={{ height: 500 }} />
-  {console.log(powerSources.data.data)}
-  </>
+  return <ReactECharts option={option} style={{ height: 500 }} />
 }
 
 export default Chart;
