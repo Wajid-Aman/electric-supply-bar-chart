@@ -106,16 +106,25 @@ const Chart = ({powerSources}) => {
     },
     dataZoom: [
       {
-        type: "slider",
-        filterMode: "weakFilter",
-        showDataShadow: false,
-        top: 400,
-        labelFormatter: "",
+        type: 'slider',
+        xAxisIndex: 0,
+        filterMode: 'none'
       },
       {
-        type: "inside",
-        filterMode: "weakFilter",
+        type: 'slider',
+        yAxisIndex: 0,
+        filterMode: 'none'
       },
+      {
+        type: 'inside',
+        xAxisIndex: 0,
+        filterMode: 'none'
+      },
+      {
+        type: 'inside',
+        yAxisIndex: 0,
+        filterMode: 'none'
+      }
     ],
     grid: {
       height: 300,
