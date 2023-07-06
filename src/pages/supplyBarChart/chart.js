@@ -83,7 +83,7 @@ const Chart = ({powerSources}) => {
         }
       } else {
         if (
-          mainData[key][mainDataindex-1] >=
+          mainData[key][mainDataindex-1]["minute_window"] >=
           powerSources.data.data[powerSources.data.data.length - 1]["minute_window"]
         ) {
           break;
