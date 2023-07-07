@@ -6,6 +6,8 @@ import { miliSecondsToTime, timeToMiliSeconds } from "../../helpers";
 const Chart = ({powerSources}) => {
   let data = [];
   let mainData = {};
+  const NOPACKET_TAG = 'NoPacket';
+
   for (let i = 0; i<powerSources.data.data.length; i++ ){
     if (i===0){
       const firstDate = powerSources.data.data[i].date;
@@ -36,7 +38,7 @@ const Chart = ({powerSources}) => {
     { name: "DG+Solar+Battery", color: "#00FFFF" },
     { name: "DG+Battery+Solar", color: "#00FFFF" },
     { name: "Undetermined", color: "#BBE3FD" },
-    { name: "", color: "#FFFFFF" },
+    { name: NOPACKET_TAG, color: "gray" },
   ];
   
   Object.keys(mainData).forEach((key, index) => {
@@ -66,7 +68,7 @@ const Chart = ({powerSources}) => {
           });
           mainDataindex++;
         } else {
-          const typeItem = types.find((item) => item.name === "");
+          const typeItem = types.find((item) => item.name === NOPACKET_TAG);
           const afterTime = beforeTime + duration;
           data.push({
             name: typeItem.name,
@@ -88,7 +90,7 @@ const Chart = ({powerSources}) => {
         ) {
           break;
         }
-        const typeItem = types.find((item) => item.name === "");
+        const typeItem = types.find((item) => item.name === NOPACKET_TAG);
         const afterTime = beforeTime + duration;
         data.push({
           name: typeItem.name,
@@ -174,10 +176,10 @@ const Chart = ({powerSources}) => {
     },
     xAxis: {
       scale: true,
-      max: timeToMiliSeconds("23:55:00"),
+      max: timeToMiliSeconds("23:59:59"),
       axisLabel: {
         formatter: function (val) {
-          if(val<=timeToMiliSeconds("23:55:00")){
+          if(val<=timeToMiliSeconds("23:59:59")){
             return miliSecondsToTime(val);
           }
         },
